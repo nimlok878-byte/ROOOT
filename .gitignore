@@ -21,3 +21,5 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+#API GROQ
+GROQ_API_KEY=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
