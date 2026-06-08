@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROOOT — Gestione Ordini Intelligente</title>
+<style>
+/* ============================================
+   ROOOT LANDING — Motion Page
+   Brand: #2D3436 (dark) + #5B9BD5 (blue OOO)
+   Aesthetic: Clean SaaS, technical, editorial
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --dark: #2D3436;
+  --blue: #5B9BD5;
+  --blue-light: #7DB4E0;
+  --blue-pale: #E8F1FA;
+  --blue-glow: rgba(91, 155, 213, 0.15);
+  --white: #FFFFFF;
+  --off-white: #F8FAFB;
+  --gray-50: #F1F3F5;
+  --gray-100: #E9ECEF;
+  --gray-200: #DEE2E6;
+  --gray-400: #ADB5BD;
+  --gray-600: #6C757D;
+  --gray-800: #343A40;
+  --green: #51CF66;
+  --green-dark: #37B24D;
+  --orange: #FF922B;
+  --red: #FF6B6B;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --shadow-blue: 0 8px 32px rgba(91,155,213,0.25);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+}
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--dark);
+  background: var(--white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Scroll Reveal System --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  transition: all 0.3s ease;
+}
+nav.scrolled {
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-logo {
+  height: 32px;
+  display: flex; align-items: center;
+}
+.nav-logo img {
+  height: 32px; width: auto;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  color: var(--gray-600);
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a:hover { color: var(--dark); }
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--blue);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-links a:hover::after { width: 100%; }
+
+.nav-cta {
+  padding: 8px 20px;
+  background: var(--dark);
+  color: var(--white) !important;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  transition: all 0.2s !important;
+}
+.nav-cta:hover {
+  background: var(--blue) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-blue);
+}
+.nav-cta::after { display: none !important; }
+
+.nav-hamburger {
+  display: none;
+  width: 36px; height: 36px;
+  border: none; background: none;
+  cursor: pointer; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--dark); border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 60px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 20%, var(--blue-glow), transparent),
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(91,155,213,0.08), transparent);
+  z-index: 0;
+}
+
+/* Animated grid */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(91,155,213,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,155,213,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridFloat 20s linear infinite;
+  z-index: 0;
+}
+@keyframes gridFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(60px, 60px); }
+}
+
+.hero-content {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.hero-text { max-width: 560px; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: var(--blue-pale);
+  border-radius: 20px;
+  font-size: 13px; font-weight: 500;
+  color: var(--blue);
+  margin-bottom: 24px;
+}
+.hero-badge .pulse {
+  width: 8px; height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+.hero h1 {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 20px;
+}
+.hero h1 .blue { color: var(--blue); }
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--gray-600);
+  line-height: 1.6;
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.hero-actions {
+  display: flex; gap: 12px; align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  background: var(--blue);
+  color: var(--white);
+  border: none; border-radius: var(--radius-md);
+  font-size: 15px; font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-primary:hover {
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-blue);
+}
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--dark);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  font-size: 15px; font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.btn-secondary:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-2px);
+}
+
+/* --- Hero Visual: Live Chat Mockup --- */
+.hero-visual {
+  position: relative;
+  perspective: 1200px;
+}
+
+.chat-mockup {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  transform: rotateY(-4deg) rotateX(2deg);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chat-mockup:hover {
+  transform: rotateY(0) rotateX(0) scale(1.02);
+}
+
+.mock-header {
+  background: var(--blue);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.mock-avatar {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600; color: var(--white);
+}
+.mock-header-info .mock-name {
+  font-size: 14px; font-weight: 600; color: var(--white);
+}
+.mock-header-info .mock-status {
+  font-size: 11px; color: rgba(255,255,255,0.75);
+}
+
+.mock-messages {
+  padding: 16px;
+  background: #E6EBEE;
+  min-height: 320px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.mock-msg {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  opacity: 0;
+  animation: mockMsgIn 0.4s forwards;
+  position: relative;
+}
+
+.mock-msg.bot {
+  background: var(--white);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow-sm);
+}
+.mock-msg.user {
+  background: #EFFDDE;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.mock-msg .msg-time {
+  font-size: 10px; color: var(--gray-400);
+  margin-top: 4px;
+  text-align: right;
+}
+
+@keyframes mockMsgIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mock-msg:nth-child(1) { animation-delay: 0.5s; }
+.mock-msg:nth-child(2) { animation-delay: 1.2s; }
+.mock-msg:nth-child(3) { animation-delay: 2.0s; }
+.mock-msg:nth-child(4) { animation-delay: 2.8s; }
+.mock-msg:nth-child(5) { animation-delay: 3.6s; }
+.mock-msg:nth-child(6) { animation-delay: 4.2s; }
+
+.mock-quick-replies {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 4px;
+  opacity: 0;
+  animation: mockMsgIn 0.4s 4.8s forwards;
+}
+.mock-qr {
+  padding: 6px 14px;
+  border: 1.5px solid var(--blue);
+  border-radius: 16px;
+  font-size: 12px; font-weight: 500;
+  color: var(--blue);
+  background: var(--white);
+  cursor: default;
+  transition: all 0.2s;
+}
+.mock-qr:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.mock-input {
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--white);
+  border-top: 1px solid var(--gray-100);
+}
+.mock-input-field {
+  flex: 1; font-size: 13px; color: var(--gray-400);
+}
+.mock-send {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.mock-send svg {
+  width: 14px; height: 14px; fill: var(--white);
+  transform: translateX(1px);
+}
+
+/* Floating badges near mockup */
+.float-badge {
+  position: absolute;
+  padding: 8px 14px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+  z-index: 2;
+}
+.float-badge .icon {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+
+.badge-telegram {
+  top: 20px; right: -20px;
+  animation: floatUp 3s ease-in-out infinite;
+}
+.badge-telegram .icon { background: #E3F2FD; }
+
+.badge-sheets {
+  bottom: 60px; left: -30px;
+  animation: floatUp 3s ease-in-out 1s infinite;
+}
+.badge-sheets .icon { background: #E8F5E9; }
+
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* ============================================
+   SECTION: HOW IT WORKS (WORKFLOW)
+   ============================================ */
+.section {
+  padding: 100px 60px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.section-label {
+  font-size: 13px; font-weight: 600;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--gray-600);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Workflow Steps */
+.workflow-section {
+  background: var(--off-white);
+}
+
+.workflow-track {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0;
+  position: relative;
+  align-items: flex-start;
+}
+
+/* Connector line */
+.workflow-track::before {
+  content: '';
+  position: absolute;
+  top: 48px;
+  left: 60px; right: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--green-dark));
+  z-index: 0;
+}
+
+.wf-step {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  padding: 0 12px;
+}
+
+.wf-icon {
+  width: 96px; height: 96px;
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-bottom: 20px;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wf-step:hover .wf-icon {
+  transform: translateY(-6px) scale(1.05);
+}
+
+.wf-icon.telegram { background: #E3F2FD; }
+.wf-icon.ai { background: var(--blue-pale); }
+.wf-icon.sheets { background: #E8F5E9; }
+.wf-icon.confirm { background: #FFF3E0; }
+
+.wf-num {
+  position: absolute; top: -8px; right: -8px;
+  width: 28px; height: 28px;
+  background: var(--dark);
+  color: var(--white);
+  border-radius: 50%;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.wf-title {
+  font-size: 15px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.wf-desc {
+  font-size: 13px; color: var(--gray-600);
+  line-height: 1.5;
+  max-width: 180px;
+}
+
+/* ============================================
+   SECTION: CHANNELS
+   ============================================ */
+.channels-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.channel-card {
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.channel-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--blue);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.channel-card:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+.channel-card:hover::before {
+  transform: scaleX(1);
+}
+
+.channel-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+.channel-icon.tg { background: #E3F2FD; }
+.channel-icon.em { background: #FFF3E0; }
+.channel-icon.gs { background: #E8F5E9; }
+
+.channel-card h3 {
+  font-size: 18px; font-weight: 700;
+  margin-bottom: 10px;
+}
+.channel-card p {
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+.channel-features {
+  margin-top: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.channel-features li {
+  list-style: none;
+  font-size: 13px;
+  color: var(--gray-800);
+  display: flex; align-items: center; gap: 8px;
+}
+.channel-features li::before {
+  content: '✓';
+  color: var(--green-dark);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ============================================
+   SECTION: LIVE DEMO SIMULATION
+   ============================================ */
+.demo-section {
+  background: var(--dark);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-section .section-label { color: var(--blue-light); }
+.demo-section .section-title { color: var(--white); }
+.demo-section .section-desc { color: var(--gray-400); }
+
+.demo-bg-glow {
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(91,155,213,0.12), transparent 70%);
+  top: -200px; right: -200px;
+  pointer-events: none;
+}
+
+.demo-container {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Live Terminal / Simulation */
+.demo-terminal {
+  background: #1a1e24;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.terminal-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 18px;
+  background: #252a32;
+}
+.terminal-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.terminal-dot.r { background: #ff5f57; }
+.terminal-dot.y { background: #febc2e; }
+.terminal-dot.g { background: #28c840; }
+.terminal-title {
+  margin-left: 12px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--gray-400);
+}
+
+.terminal-body {
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.8;
+  min-height: 340px;
+}
+
+.term-line {
+  opacity: 0;
+  animation: termLine 0.3s forwards;
+}
+.term-line .prompt { color: var(--green); }
+.term-line .cmd { color: var(--white); }
+.term-line .comment { color: #636e7b; }
+.term-line .string { color: #e5c07b; }
+.term-line .success { color: var(--green); }
+.term-line .info { color: var(--blue-light); }
+.term-line .warn { color: var(--orange); }
+
+@keyframes termLine {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================
+   SECTION: STATS
+   ============================================ */
+.stats-bar {
+  background: var(--blue);
+  padding: 48px 60px;
+  display: flex; justify-content: center; gap: 80px;
+  flex-wrap: wrap;
+}
+.stat {
+  text-align: center;
+  color: var(--white);
+}
+.stat-value {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label {
+  font-size: 14px;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* ============================================
+   SECTION: PRODUCT CARDS
+   ============================================ */
+.products-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.product-card {
+  background: var(--off-white);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  border: 1px solid var(--gray-100);
+  transition: all 0.3s;
+  text-align: center;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--blue);
+}
+
+.product-emoji {
+  font-size: 40px;
+  margin-bottom: 16px;
+  display: block;
+}
+.product-card h3 {
+  font-size: 16px; font-weight: 700;
+  margin-bottom: 6px;
+}
+.product-card .product-weight {
+  font-size: 13px;
+  color: var(--gray-600);
+  margin-bottom: 16px;
+}
+.product-card .product-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.product-card .product-price span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--gray-400);
+}
+
+/* ============================================
+   SECTION: CTA
+   ============================================ */
+.cta-section {
+  text-align: center;
+  padding: 100px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 50% 70% at 50% 50%, var(--blue-glow), transparent);
+  z-index: 0;
+}
+.cta-content {
+  position: relative; z-index: 1;
+}
+
+.cta-section h2 {
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+.cta-section p {
+  font-size: 17px;
+  color: var(--gray-600);
+  margin-bottom: 32px;
+  max-width: 500px;
+  margin-left: auto; margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+  background: var(--dark);
+  color: var(--gray-400);
+  padding: 48px 60px 32px;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-logo {
+  font-size: 20px; font-weight: 700;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.footer-logo .blue { color: var(--blue); }
+.footer-links {
+  display: flex; gap: 24px;
+  list-style: none;
+}
+.footer-links a {
+  color: var(--gray-400);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+.footer-copy {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .hero-content { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual { display: flex; justify-content: center; }
+  .chat-mockup { margin: 0 auto; transform: none; }
+  .float-badge { display: none; }
+  .workflow-track { flex-wrap: wrap; justify-content: center; gap: 32px; }
+  .workflow-track::before { display: none; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  
+  .section { padding: 64px 20px; }
+  .hero { padding: 100px 20px 60px; }
+
+  .channels-grid { grid-template-columns: 1fr; }
+  .products-grid { grid-template-columns: 1fr 1fr; }
+
+  .stats-bar { gap: 40px; padding: 40px 20px; }
+  .stat-value { font-size: 32px; }
+
+  footer { padding: 40px 20px 24px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     NAVIGATION
+     ============================================ -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <span style="font-size:22px;font-weight:700;letter-spacing:1px;">
+      <span style="color:#2D3436">R</span><span style="color:#5B9BD5">OOO</span><span style="color:#2D3436">T</span>
+    </span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#workflow">Come Funziona</a></li>
+    <li><a href="#channels">Canali</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#products">Prodotti</a></li>
+    <li><a href="#cta" class="nav-cta">Inizia Ora</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge reveal">
+        <span class="pulse"></span>
+        Sistema Attivo
+      </div>
+      <h1 class="reveal reveal-delay-1">
+        Ordini automatici<br>via <span class="blue">Telegram</span><br>
+      </h1>
+      <p class="hero-subtitle reveal reveal-delay-2">
+        ROOOT collega Telegram e Google Sheets in un workflow intelligente.
+        I tuoi clienti ordinano in chat — il sistema fa il resto.
+      </p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="#demo" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Guarda la Demo
+        </a>
+        <a href="#workflow" class="btn-secondary">
+          Come Funziona →
+        </a>
+      </div>
+    </div>
+
+    <!-- Hero Chat Mockup -->
+    <div class="hero-visual reveal reveal-delay-2">
+      <div class="chat-mockup">
+        <div class="mock-header">
+          <div class="mock-avatar">R</div>
+          <div class="mock-header-info">
+            <div class="mock-name">ROOOT Bot</div>
+            <div class="mock-status">● online</div>
+          </div>
+        </div>
+        <div class="mock-messages">
+          <div class="mock-msg bot">
+            Ciao Mario! 👋 Benvenuto.<br>Come posso aiutarti oggi?
+            <div class="msg-time">14:32</div>
+          </div>
+          <div class="mock-msg user">
+            Vorrei una cassetta media per domani
+            <div class="msg-time">14:32</div>
+          </div>
+          <div class="mock-msg bot">
+            Perfetto! Ho trovato:<br>📦 Cassetta Frutta Mista Media — 5kg
+            <div class="msg-time">14:33</div>
+          </div>
+          <div class="mock-msg bot">
+            Consegna: domani 9:00–13:00<br>Priorità: <strong>VIP</strong>
+            <div class="msg-time">14:33</div>
+          </div>
+          <div class="mock-msg bot">
+            ✅ Ordine #157 confermato!
+            <div class="msg-time">14:33</div>
+          </div>
+          <div class="mock-msg bot">
+            Vuoi fare altro?
+            <div class="msg-time">14:33</div>
+          </div>
+          <div class="mock-quick-replies">
+            <span class="mock-qr">📦 Nuovo ordine</span>
+            <span class="mock-qr">📍 Traccia</span>
+            <span class="mock-qr">✅ Grazie!</span>
+          </div>
+        </div>
+        <div class="mock-input">
+          <div class="mock-input-field">Scrivi un messaggio...</div>
+          <div class="mock-send">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Badges -->
+      <div class="float-badge badge-telegram">
+        <span class="icon">✈️</span>
+        Telegram collegato
+      </div>
+      <div class="float-badge badge-sheets">
+        <span class="icon">📊</span>
+        Ordine salvato su Sheets
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     STATS BAR
+     ============================================ -->
+<div class="stats-bar">
+  <div class="stat reveal">
+    <div class="stat-value" data-count="3">0</div>
+    <div class="stat-label">Canali Integrati</div>
+  </div>
+  <div class="stat reveal reveal-delay-1">
+    <div class="stat-value" data-count="100" data-suffix="%">0</div>
+    <div class="stat-label">Ordini Automatici</div>
+  </div>
+  <div class="stat reveal reveal-delay-2">
+    <div class="stat-value" data-count="0" data-special="< 5s">< 5s</div>
+    <div class="stat-label">Tempo di Risposta</div>
+  </div>
+  <div class="stat reveal reveal-delay-3">
+    <div class="stat-value" data-count="24" data-suffix="/7">0</div>
+    <div class="stat-label">Sempre Attivo</div>
+  </div>
+</div>
+
+<!-- ============================================
+     WORKFLOW SECTION
+     ============================================ -->
+<section class="section workflow-section" id="workflow">
+  <div class="section-header">
+    <div class="section-label reveal">Workflow</div>
+    <h2 class="section-title reveal reveal-delay-1">Come funziona il sistema</h2>
+    <p class="section-desc reveal reveal-delay-2">
+      Dal messaggio del cliente alla conferma dell'ordine — tutto automatizzato con n8n, AI e Google Sheets.
+    </p>
+  </div>
+
+  <div class="workflow-track">
+    <div class="wf-step reveal">
+      <div class="wf-icon telegram">
+        <span class="wf-num">1</span>
+        📩
+      </div>
+      <div class="wf-title">Ricezione</div>
+      <div class="wf-desc">Il cliente invia un messaggio su Telegram</div>
+    </div>
+    <div class="wf-step reveal reveal-delay-1">
+      <div class="wf-icon ai">
+        <span class="wf-num">2</span>
+        🤖
+      </div>
+      <div class="wf-title">AI Agent</div>
+      <div class="wf-desc">Estrae prodotto, data, urgenza dal messaggio</div>
+    </div>
+    <div class="wf-step reveal reveal-delay-2">
+      <div class="wf-icon sheets">
+        <span class="wf-num">3</span>
+        📊
+      </div>
+      <div class="wf-title">Verifica</div>
+      <div class="wf-desc">Cerca cliente e prodotto su Google Sheets</div>
+    </div>
+    <div class="wf-step reveal reveal-delay-3">
+      <div class="wf-icon confirm">
+        <span class="wf-num">4</span>
+        📝
+      </div>
+      <div class="wf-title">Registrazione</div>
+      <div class="wf-desc">Crea ordine con numero, data, priorità</div>
+      <div class="wf-title">Conferma</div>
+      <div class="wf-desc">Invia conferma al cliente su Telegram</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CHANNELS SECTION
+     ============================================ -->
+<section class="section" id="channels">
+  <div class="section-header">
+    <div class="section-label reveal">Canali</div>
+    <h2 class="section-title reveal reveal-delay-1">Tre canali, un solo sistema</h2>
+    <p class="section-desc reveal reveal-delay-2">
+      I tuoi clienti scelgono come ordinare. ROOOT gestisce tutto da un unico workflow.
+    </p>
+  </div>
+
+  <div class="channels-grid">
+    <div class="channel-card reveal">
+      <div class="channel-icon tg">✈️</div>
+      <h3>Telegram Bot</h3>
+      <p>I clienti inviano ordini direttamente in chat. Il bot risponde con conferme, quick replies e tracking.</p>
+      <ul class="channel-features">
+        <li>Risposte automatiche istantanee</li>
+        <li>Quick reply per ordini guidati</li>
+        <li>Notifiche stato ordine</li>
+        <li>Riconoscimento clienti registrati</li>
+      </ul>
+    </div>
+    <div class="channel-card reveal reveal-delay-2">
+      <div class="channel-icon gs">📊</div>
+      <h3>Google Sheets</h3>
+      <p>Database centrale per clienti, prodotti e ordini. Tutto sincronizzato in tempo reale.</p>
+      <ul class="channel-features">
+        <li>Database Clienti con lookup</li>
+        <li>Catalogo Prodotti aggiornabile</li>
+        <li>Registro Ordini automatico</li>
+        <li>Numerazione progressiva</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     DEMO SECTION
+     ============================================ -->
+<section class="section demo-section" id="demo">
+  <div class="demo-bg-glow"></div>
+  <div class="section-header">
+    <div class="section-label reveal">Demo Live</div>
+    <h2 class="section-title reveal reveal-delay-1">Il workflow in azione</h2>
+    <p class="section-desc reveal reveal-delay-2">
+      Guarda come un messaggio Telegram diventa un ordine registrato in pochi secondi.
+    </p>
+  </div>
+
+  <div class="demo-container reveal reveal-delay-1">
+    <div class="demo-terminal">
+      <div class="terminal-bar">
+        <span class="terminal-dot r"></span>
+        <span class="terminal-dot y"></span>
+        <span class="terminal-dot g"></span>
+        <span class="terminal-title">n8n — ROOOT Workflow</span>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <!-- Lines injected by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PRODUCTS SECTION
+     ============================================ -->
+<section class="section" id="products">
+  <div class="section-header">
+    <div class="section-label reveal">Catalogo</div>
+    <h2 class="section-title reveal reveal-delay-1">Prodotti gestiti dal sistema</h2>
+    <p class="section-desc reveal reveal-delay-2">
+      Il catalogo è aggiornabile direttamente su Google Sheets. L'AI riconosce automaticamente il prodotto richiesto.
+    </p>
+  </div>
+
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <span class="product-emoji">🍎</span>
+      <h3>Cassetta Piccola</h3>
+      <p class="product-weight">Frutta Mista — 3 kg</p>
+      <div class="product-price">€25 <span>/ cassetta</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-1">
+      <span class="product-emoji">🍊</span>
+      <h3>Cassetta Media</h3>
+      <p class="product-weight">Frutta Mista — 5 kg</p>
+      <div class="product-price">€39 <span>/ cassetta</span></div>
+    </div>
+    <div class="product-card reveal reveal-delay-2">
+      <span class="product-emoji">🍇</span>
+      <h3>Cassetta Grande</h3>
+      <p class="product-weight">Frutta Mista — 10 kg</p>
+      <div class="product-price">€65 <span>/ cassetta</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     CTA SECTION
+     ============================================ -->
+<section class="cta-section" id="cta">
+  <div class="cta-content">
+    <h2 class="reveal">Pronto per automatizzare<br>i tuoi ordini?</h2>
+    <p class="reveal reveal-delay-1">
+      Configura ROOOT in meno di un'ora. Telegram e Google Sheets — tutto collegato.
+    </p>
+    <div class="hero-actions reveal reveal-delay-2" style="justify-content:center;">
+      <a href="https://t.me/progetto_ai_bot" class="btn-primary" style="padding:16px 36px;font-size:16px;">
+        Avvia il ROOOTbot →
+      </a>
+      <a href="guida-rooot.pdf" class="btn-secondary" download>
+        📄 Scarica la Guida
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      R<span class="blue">OOO</span>T
+    </div>
+    <ul class="footer-links">
+      <li><a href="#workflow">Workflow</a></li>
+      <li><a href="#channels">Canali</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#products">Prodotti</a></li>
+    </ul>
+    <div class="footer-copy">
+      © 2026 ROOOT — Gestione Ordini Intelligente. Powered by n8n + AI.
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+(function() {
+  'use strict';
+
+  /* ---- Scroll Reveal ---- */
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => revealObserver.observe(el));
+
+  /* ---- Navbar Scroll ---- */
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  /* ---- Mobile hamburger ---- */
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.querySelector('.nav-links');
+  hamburger.addEventListener('click', () => {
+    const isOpen = navLinks.style.display === 'flex';
+    navLinks.style.display = isOpen ? 'none' : 'flex';
+    navLinks.style.position = 'fixed';
+    navLinks.style.top = '64px';
+    navLinks.style.left = '0';
+    navLinks.style.right = '0';
+    navLinks.style.background = 'white';
+    navLinks.style.flexDirection = 'column';
+    navLinks.style.padding = '20px';
+    navLinks.style.gap = '16px';
+    navLinks.style.boxShadow = isOpen ? 'none' : '0 8px 32px rgba(0,0,0,0.1)';
+    navLinks.style.zIndex = '99';
+  });
+
+  /* ---- Counter Animation ---- */
+  const statValues = document.querySelectorAll('.stat-value');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const special = el.dataset.special;
+      if (special) { el.textContent = special; return; }
+
+      const target = parseInt(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      if (target === 0) return;
+      
+      let current = 0;
+      const step = Math.ceil(target / 40);
+      const interval = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(interval);
+        }
+        el.textContent = current + suffix;
+      }, 30);
+
+      counterObserver.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  statValues.forEach(el => counterObserver.observe(el));
+
+  /* ---- Terminal Demo Animation ---- */
+  const terminalLines = [
+    { type: 'comment', text: '# Nuovo messaggio ricevuto da Telegram' },
+    { type: 'info', text: '→ @mario_rossi: "Vorrei una cassetta media per domani"' },
+    { type: 'blank' },
+    { type: 'comment', text: '# Step 1: AI Agent — Estrazione dati' },
+    { type: 'cmd', text: '  prodotto:    "cassetta media"' },
+    { type: 'cmd', text: '  consegna:    "11/02/2026"' },
+    { type: 'warn', text: '  urgenza:     "VIP" (keyword: domani)' },
+    { type: 'blank' },
+    { type: 'comment', text: '# Step 2: Google Sheets — Verifica cliente' },
+    { type: 'success', text: '  ✓ Cliente trovato: Mario Rossi (ID: 042)' },
+    { type: 'blank' },
+    { type: 'comment', text: '# Step 3: Matching prodotto' },
+    { type: 'success', text: '  ✓ Cassetta Frutta Mista Media — 5kg' },
+    { type: 'blank' },
+    { type: 'comment', text: '# Step 4: Registrazione ordine' },
+    { type: 'info', text: '  Ordine #157 → Google Sheets [Ordini]' },
+    { type: 'cmd', text: '  Data ordine:    10/02/2026 14:33' },
+    { type: 'cmd', text: '  Data trasporto: 11/02/2026' },
+    { type: 'warn', text: '  Priorità:       VIP' },
+    { type: 'blank' },
+    { type: 'comment', text: '# Step 5: Conferma al cliente' },
+    { type: 'success', text: '  ✓ Messaggio Telegram inviato a @mario_rossi' },
+    { type: 'blank' },
+    { type: 'success', text: '  ══════════════════════════════════════' },
+    { type: 'success', text: '  ✅ WORKFLOW COMPLETATO — 4.2 secondi' },
+    { type: 'success', text: '  ══════════════════════════════════════' },
+  ];
+
+  const termBody = document.getElementById('terminalBody');
+  let termAnimated = false;
+
+  const termObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !termAnimated) {
+        termAnimated = true;
+        animateTerminal();
+      }
+    });
+  }, { threshold: 0.3 });
+  termObserver.observe(termBody);
+
+  function animateTerminal() {
+    termBody.innerHTML = '';
+    let delay = 0;
+    terminalLines.forEach((line) => {
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'term-line';
+        if (line.type === 'blank') {
+          div.innerHTML = '&nbsp;';
+        } else {
+          div.innerHTML = `<span class="${line.type}">${escapeHtml(line.text)}</span>`;
+        }
+        termBody.appendChild(div);
+        termBody.scrollTop = termBody.scrollHeight;
+      }, delay);
+      delay += line.type === 'blank' ? 200 : 120;
+    });
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ---- Smooth anchor scrolling ---- */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Close mobile nav
+        if (window.innerWidth <= 768) {
+          navLinks.style.display = 'none';
+        }
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
